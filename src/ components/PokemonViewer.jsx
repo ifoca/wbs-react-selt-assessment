@@ -40,7 +40,7 @@ const PokemonViewer = ({ id }) => {
   return (
     <>
       <div>
-        {loading && !data ? <p>loading</p> : ''}
+        {loading ? <p>loading</p> : ''}
         {data ? (
           <div>
             <p>{data.name}</p>
