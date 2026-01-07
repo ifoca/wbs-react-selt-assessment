@@ -40,20 +40,18 @@ const PokemonViewer = ({ id }) => {
     fetchPokemon();
   }, [id]);
 
-  if (loading) {
-    console.log('SHOWING LOADING');
-    return <p>loading</p>;
-  }
-  if (error) return <p>{error}</p>;
-  if (data) {
-    return (
-      <div>
-        <p>{data.name}</p>
-        <img src={data.sprites.front_default} alt={data.name} />
-      </div>
-    );
-  }
-  return null;
+  return (
+    <>
+      {loading && <p>loading</p>}
+      {error && <p>{error}</p>}
+      {data && (
+        <div>
+          <p>{data.name}</p>
+          <img src={data.sprites.front_default} alt={data.name} />
+        </div>
+      )}
+    </>
+  );
 };
 
 export default PokemonViewer;
