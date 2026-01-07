@@ -9,27 +9,30 @@ const PokemonViewer = ({ id }) => {
   // TODO: Show Pokémon name and image sprites.front_default when data is fetched successfully
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [data, setData] = useState('');
+  const [data, setData] = useState(null);
 
   const fetchPokemon = async () => {
     setLoading(true);
     setError(null);
-    if (id > 0 && id < 151 && !isNaN(id)) {
-      try {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch Pokémon');
-        }
-        const data = await res.json();
-        setData(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setLoading(false);
+    setData(null);
+
+    if (!id || id < 1 || id > 150) {
       setError('Invalid Pokémon ID');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch Pokémon');
+      }
+      const data = await res.json();
+      setData(data);
+    } catch (err) {
+      setError('Failed to fetch Pokémon');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,21 +40,20 @@ const PokemonViewer = ({ id }) => {
     fetchPokemon();
   }, [id]);
 
-  return (
-    <>
+  if (loading) {
+    console.log('SHOWING LOADING');
+    return <p>loading</p>;
+  }
+  if (error) return <p>{error}</p>;
+  if (data) {
+    return (
       <div>
-        {loading ? <p>loading</p> : ''}
-        {data ? (
-          <div>
-            <p>{data.name}</p>
-            <img src={data.sprites.front_default} alt={data.name} />
-          </div>
-        ) : (
-          <p>{error}</p>
-        )}
+        <p>{data.name}</p>
+        <img src={data.sprites.front_default} alt={data.name} />
       </div>
-    </>
-  );
+    );
+  }
+  return null;
 };
 
 export default PokemonViewer;
